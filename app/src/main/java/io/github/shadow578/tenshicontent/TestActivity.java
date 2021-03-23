@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import io.github.shadow578.tenshi.content.aidl.IContentAdapter;
 import io.github.shadow578.tenshi.content.aidl.IContentAdapterCallback;
-import io.github.shadow578.tenshicontent.fouranime.webview.FourAnimeWebViewAdapterService;
+import io.github.shadow578.tenshicontent.fouranime.FourAnimeAdapterService;
 
 public class TestActivity extends AppCompatActivity {
 
@@ -24,11 +24,10 @@ public class TestActivity extends AppCompatActivity {
         setContentView(R.layout.activity_test);
 
         // test 4anime adapter
-        findViewById(R.id.fouranimeanime_test_btn).setOnClickListener(v -> testService(FourAnimeWebViewAdapterService.class));
+        findViewById(R.id.fouranimeanime_test_btn).setOnClickListener(v -> testService(FourAnimeAdapterService.class));
     }
 
-    private void testService(@SuppressWarnings("SameParameterValue") Class<?> svcClass)
-    {
+    private void testService(@SuppressWarnings("SameParameterValue") Class<?> svcClass) {
         final Intent svcI = new Intent(this, svcClass);
         bindService(svcI, new ServiceConnection() {
             @Override

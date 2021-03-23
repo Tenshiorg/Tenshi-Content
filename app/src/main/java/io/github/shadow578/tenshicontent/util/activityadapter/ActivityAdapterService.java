@@ -1,21 +1,32 @@
-package io.github.shadow578.tenshicontent.fouranime.webview;
+package io.github.shadow578.tenshicontent.util.activityadapter;
 
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.RemoteException;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import io.github.shadow578.tenshi.content.aidl.IContentAdapter;
 import io.github.shadow578.tenshi.content.aidl.IContentAdapterCallback;
 
-public class FourAnimeWebViewAdapterService extends Service {
+/**
+ * service portion of a ActivityAdapter, to register to Tenshi.
+ * Just implement {@link #getActivityClass()} and you're good to go
+ * <p>
+ * ---
+ * a ActivityAdapter requires you to implement both a {@link ActivityAdapterService} that you can register with Tenshi
+ * and a {@link ActivityAdapterActivity} that contains the main logic of your content adapter.
+ * Communication and callbacks are handled automatically between activity, service and Tenshi
+ */
+public abstract class ActivityAdapterService<T extends ActivityAdapterActivity<?>> extends Service {
+    //region extras
     /**
      * action to signal that the callback should be invoked.
      * only valid if internal callback is set, otherwise ignored
      */
-    public static final String ACTION_NOTIFY_RESULT = "io.github.shadow578.tenshicontent.fouranime.webview.NOTIFY_RESULT";
+    public static final String ACTION_NOTIFY_RESULT = "io.github.shadow578.tenshicontent.util.activityadapter.ActivityAdapterService.NOTIFY_RESULT";
 
     /**
      * stream url to pass to callback, string
@@ -26,6 +37,7 @@ public class FourAnimeWebViewAdapterService extends Service {
      * persistent storage to pass to callback, string
      */
     public static final String EXTRA_RESULT_PERSISTENT_STORAGE = "persistentStorage";
+    //endregion
 
     /**
      * internal callback reference
@@ -36,7 +48,7 @@ public class FourAnimeWebViewAdapterService extends Service {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return new Adapter();
+        return new ActivityAdapter();
     }
 
     @Override
@@ -65,26 +77,34 @@ public class FourAnimeWebViewAdapterService extends Service {
     }
 
     /**
-     * adapter class.
-     * just opens {@link FourAnimeWebViewActivity} with required extras and sets {@link FourAnimeWebViewAdapterService#callback}
+     * get the activity adapter activity to launch from this service
+     *
+     * @return the activity class
      */
-    class Adapter extends IContentAdapter.Stub {
+    @NonNull
+    protected abstract Class<T> getActivityClass();
+
+    /**
+     * adapter class for a ActivityAdapterActivity
+     * just opens a {@link ActivityAdapterActivity} with required extras and sets {@link #callback}
+     */
+    private class ActivityAdapter extends IContentAdapter.Stub {
         @Override
         public void requestStreamUri(int malID, String enTitle, String jpTitle, int episode, String peristentStorage, IContentAdapterCallback cb) {
             // set callback
             callback = cb;
 
-            // start webview activity
-            final Intent i = new Intent(getApplicationContext(), FourAnimeWebViewActivity.class);
+            // start activity
+            final Intent i = new Intent(getApplicationContext(), getActivityClass());
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                     | Intent.FLAG_ACTIVITY_CLEAR_TOP
                     | Intent.FLAG_ACTIVITY_NO_HISTORY
                     | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-            i.putExtra(FourAnimeWebViewActivity.EXTRA_MAL_ID, malID);
-            i.putExtra(FourAnimeWebViewActivity.EXTRA_ANIME_TITLE_EN, enTitle);
-            i.putExtra(FourAnimeWebViewActivity.EXTRA_ANIME_TITLE_JP, jpTitle);
-            i.putExtra(FourAnimeWebViewActivity.EXTRA_TARGET_EPISODE, episode);
-            i.putExtra(FourAnimeWebViewActivity.EXTRA_PERSISTENT_STORAGE, peristentStorage);
+            i.putExtra(ActivityAdapterActivity.EXTRA_MAL_ID, malID);
+            i.putExtra(ActivityAdapterActivity.EXTRA_ANIME_TITLE_EN, enTitle);
+            i.putExtra(ActivityAdapterActivity.EXTRA_ANIME_TITLE_JP, jpTitle);
+            i.putExtra(ActivityAdapterActivity.EXTRA_TARGET_EPISODE, episode);
+            i.putExtra(ActivityAdapterActivity.EXTRA_PERSISTENT_STORAGE, peristentStorage);
             getApplicationContext().startActivity(i);
         }
     }

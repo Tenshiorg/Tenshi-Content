@@ -2,6 +2,5 @@
     <string name="app_name">Tenshi Content</string>
 
     <!-- 4anime -->
-    <string name="fouranime_display_name_soup">4Anime (JSoup)</string>
-    <string name="fouranime_display_name_webview">4Anime (WebView)</string>
+    <string name="fouranime_display_name">4Anime</string>
 </resources>

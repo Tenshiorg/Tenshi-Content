@@ -4,15 +4,14 @@
 const SLUG_REGEX = /(?:4anime.to\/)(.+)(?:-episode-\d+)(?:\?id=)?/;
 const VIDEO_POSTER = '';
 
-
 // -- update slug in persistent storage --
 var windowLoc = window.location.href;
 var slugMatch = SLUG_REGEX.exec(windowLoc);
 if (slugMatch != null) {
     var slug = slugMatch[1];
-    Tenshi.log('SLUG_REGEX match for location ' + windowLoc + ' is: ' + slug);
+    App.log('SLUG_REGEX match for location ' + windowLoc + ' is: ' + slug);
     if (slug !== '') {
-        Tenshi.notifyAnimeSlug(slug);
+        Tenshi.setSlug(slug);
     }
 }
 
@@ -20,7 +19,7 @@ if (slugMatch != null) {
 var allVideos = document.querySelectorAll('video');
 for (var i = 0; i < allVideos.length; i++) {
     var video = allVideos[i];
-    Tenshi.log('setup for video with id: ' + video.id);
+    App.log('setup for video with id: ' + video.id);
 
     // disable autoplay on the video
     video.autoplay = false;
@@ -36,15 +35,15 @@ for (var i = 0; i < allVideos.length; i++) {
         // get the url from the video and notify tenshi
         var vidUrl = video.currentSrc.toString();
         if (vidUrl !== '') {
-            Tenshi.notifyStreamUrl(vidUrl);
+            Tenshi.onStreamUrlFound(vidUrl);
         }
     };
 }
 
 // if we setup a video, notify the user they can start it now
 if (allVideos.length > 0) {
-    Tenshi.toast('Start the Video now.');
+    App.toast('Start the Video now.');
 }
 
 // notify user we are successfully injected
-// Tenshi.toast('Injected!');
+App.toast('Injected!');
