@@ -1,29 +1,50 @@
 // Tenshi JS payload for 4anime.to
 // injected after every page load using default injector
+// -- constants --
+const SLUG_REGEX = /(?:4anime.to\/)(.+)(?:-episode-\d+)(?:\?id=)?/;
+const VIDEO_POSTER = '';
 
-// get video tag
-var vid = document.getElementById('example_video_1_html5_api');
 
-// set onplay event
-vid.onplay = function () {
-    // stop the video and show poster
-    vid.pause();
-    vid.setAttribute('poster', 'https://static.wikia.nocookie.net/jimmyneutron/images/7/71/Carl.png');
-    vid.autoplay = false;
-    vid.load();
-
-    // get the currently playing url
-    var url = vid.currentSrc.toString();
-
-    // notify tenshi of the url
-    Tenshi.notifyStreamUrl(url);
-};
-
-// check window location
-var loc = window.location.href;
-if (loc.startsWith('https://4anime.to/tonikaku-kawaii-episode')) {
-    Tenshi.notifyAnimeSlug('tonikaku-kawaii');
+// -- update slug in persistent storage --
+var windowLoc = window.location.href;
+var slugMatch = SLUG_REGEX.exec(windowLoc);
+if (slugMatch != null) {
+    var slug = slugMatch[1];
+    Tenshi.log('SLUG_REGEX match for location ' + windowLoc + ' is: ' + slug);
+    if (slug !== '') {
+        Tenshi.notifyAnimeSlug(slug);
+    }
 }
 
-// we are now injected
-Tenshi.toast("injected!");
+// -- setup all videos on the page for capturing --
+var allVideos = document.querySelectorAll('video');
+for (var i = 0; i < allVideos.length; i++) {
+    var video = allVideos[i];
+    Tenshi.log('setup for video with id: ' + video.id);
+
+    // disable autoplay on the video
+    video.autoplay = false;
+
+    // setup onplay event to capture the url
+    video.onplay = function () {
+        // stop the video and force show poster
+        video.pause();
+        video.setAttribute('poster', VIDEO_POSTER);
+        video.autoplay = false;
+        video.load();
+
+        // get the url from the video and notify tenshi
+        var vidUrl = video.currentSrc.toString();
+        if (vidUrl !== '') {
+            Tenshi.notifyStreamUrl(vidUrl);
+        }
+    };
+}
+
+// if we setup a video, notify the user they can start it now
+if (allVideos.length > 0) {
+    Tenshi.toast('Start the Video now.');
+}
+
+// notify user we are successfully injected
+// Tenshi.toast('Injected!');
