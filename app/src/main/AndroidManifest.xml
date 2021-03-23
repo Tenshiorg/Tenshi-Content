@@ -18,9 +18,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!-- 4anime -->
+
+        <!-- 4anime (jsoup) -->
         <service
-            android:name=".fouranime.FourAnimeAdapterService"
+            android:name=".fouranime.jsoup.FourAnimeSoupAdapterService"
             android:exported="true">
             <intent-filter>
                 <action android:name="io.github.shadow578.tenshi.content.ADAPTER" />
@@ -30,14 +31,38 @@
 
             <meta-data
                 android:name="io.github.shadow578.tenshi.content.DISPLAY_NAME"
-                android:value="@string/fouranime_display_name" />
+                android:value="@string/fouranime_display_name_soup" />
             <meta-data
                 android:name="io.github.shadow578.tenshi.content.ADAPTER_VERSION"
                 android:value="1" />
             <meta-data
                 android:name="io.github.shadow578.tenshi.content.UNIQUE_NAME"
-                android:value="io.github.shadow578.tenshicontent.fouranime" />
+                android:value="io.github.shadow578.tenshicontent.fouranime.soup" />
         </service>
+
+        <!-- 4anime (webview) -->
+        <service
+            android:name=".fouranime.webview.FourAnimeWebViewAdapterService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="io.github.shadow578.tenshi.content.ADAPTER" />
+
+                <category android:name="io.github.shadow578.tenshi.content.ADAPTER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="io.github.shadow578.tenshi.content.DISPLAY_NAME"
+                android:value="@string/fouranime_display_name_webview" />
+            <meta-data
+                android:name="io.github.shadow578.tenshi.content.ADAPTER_VERSION"
+                android:value="1" />
+            <meta-data
+                android:name="io.github.shadow578.tenshi.content.UNIQUE_NAME"
+                android:value="io.github.shadow578.tenshicontent.fouranime.webview" />
+        </service>
+
+        <activity android:name=".fouranime.webview.FourAnimeWebViewActivity"
+            android:label="@string/fouranime_display_name_webview"/>
     </application>
 
 </manifest>

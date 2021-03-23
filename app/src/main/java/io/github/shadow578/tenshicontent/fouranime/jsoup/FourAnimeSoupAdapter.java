@@ -1,4 +1,4 @@
-package io.github.shadow578.tenshicontent.fouranime;
+package io.github.shadow578.tenshicontent.fouranime.jsoup;
 
 import android.content.Context;
 import android.os.RemoteException;
@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 import io.github.shadow578.tenshi.content.aidl.IContentAdapter;
 import io.github.shadow578.tenshi.content.aidl.IContentAdapterCallback;
 
-public class FourAnimeAdapter extends IContentAdapter.Stub {
+public class FourAnimeSoupAdapter extends IContentAdapter.Stub {
 
     //TODO fetch from online JSON file for faster updates
     private static final String BASE_URL = "https://4anime.to/";
@@ -34,7 +34,7 @@ public class FourAnimeAdapter extends IContentAdapter.Stub {
      */
     private final Context appContext;
 
-    public FourAnimeAdapter(@NonNull Context ctx) {
+    public FourAnimeSoupAdapter(@NonNull Context ctx) {
         appContext = ctx;
     }
 
