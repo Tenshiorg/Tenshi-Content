@@ -1,7 +1,7 @@
-// Tenshi JS payload for 4anime.to
+// Tenshi JS payload for animixplay.to
 // injected after every page load using default injector
 // -- constants --
-const SLUG_REGEX = /(?:4anime.to\/)(.+)(?:-episode-\d+)(?:\?id=)?/;
+const SLUG_REGEX = /(?:animixplay.to\/v\d+\/)(.+)(?:\/ep2)/;
 const VIDEO_POSTER = '';
 
 // -- update slug in persistent storage --
@@ -46,4 +46,4 @@ if (allVideos.length > 0) {
 }
 
 // notify user we are successfully injected
-//App.toast('Injected!');
+App.toast('Injected!');

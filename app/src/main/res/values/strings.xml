@@ -3,4 +3,7 @@
 
     <!-- 4anime -->
     <string name="fouranime_display_name">4Anime</string>
+
+    <!-- animixplay -->
+    <string name="animixplay_display_name">AniMixPlay</string>
 </resources>

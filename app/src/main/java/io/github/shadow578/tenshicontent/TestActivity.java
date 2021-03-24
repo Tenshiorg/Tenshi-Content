@@ -24,6 +24,7 @@ import java.util.ArrayList;
 
 import io.github.shadow578.tenshi.content.aidl.IContentAdapter;
 import io.github.shadow578.tenshi.content.aidl.IContentAdapterCallback;
+import io.github.shadow578.tenshicontent.animixplay.AniMixPlayAdapterService;
 import io.github.shadow578.tenshicontent.fouranime.FourAnimeAdapterService;
 
 /**
@@ -35,7 +36,8 @@ public class TestActivity extends AppCompatActivity {
      * a list of all service classes that are testable content adapters
      */
     private final Class<?>[] testableServices = {
-            FourAnimeAdapterService.class
+            FourAnimeAdapterService.class,
+            AniMixPlayAdapterService.class
     };
 
     /**

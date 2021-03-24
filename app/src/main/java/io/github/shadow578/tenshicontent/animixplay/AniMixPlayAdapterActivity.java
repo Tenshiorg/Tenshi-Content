@@ -1,4 +1,4 @@
-package io.github.shadow578.tenshicontent.fouranime;
+package io.github.shadow578.tenshicontent.animixplay;
 
 import android.os.Bundle;
 import android.webkit.JavascriptInterface;
@@ -17,21 +17,30 @@ import io.github.shadow578.tenshicontent.R;
 import io.github.shadow578.tenshicontent.util.WebViewAdapterActivity;
 
 /**
- * ActivityAdapter activity for {@link FourAnimeAdapterService}.
- * Shows a webview to the user for episode selection from 4anime.to
+ * ActivityAdapter activity for {@link AniMixPlayAdapterService}
+ * Shows a webview and injects javascript to access the video url
  */
-public class FourAnimeAdapterActivity extends WebViewAdapterActivity<FourAnimeAdapterService> {
-    //region URL Constants
-    /**
-     * 4anime base url
-     */
-    private final String BASE_URL = "https://4anime.to/";
+public class AniMixPlayAdapterActivity extends WebViewAdapterActivity<AniMixPlayAdapterService> {
+    //region URL constants
 
     /**
-     * 4anime search url
+     * base url for animixplay
+     */
+    private final String BASE_URL = "https://animixplay.to/";
+
+    /**
+     * search url for animixplay
      */
     @SuppressWarnings("FieldCanBeLocal")
-    private final String SEARCH_URL = BASE_URL + "?s=";
+    private final String SEARCH_URL = BASE_URL + "?q=";
+
+    /**
+     * formattable episode url
+     * <p>
+     * FMT: anime_slug, episode
+     */
+    @SuppressWarnings("FieldCanBeLocal")
+    private final String EP_URL_FMT = BASE_URL + "/v1/%s/ep%d";
     //endregion
 
     /**
@@ -41,7 +50,7 @@ public class FourAnimeAdapterActivity extends WebViewAdapterActivity<FourAnimeAd
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        if(!loadAdapterParams()){
+        if (!loadAdapterParams()) {
             Toast.makeText(this, "failed to load params!", Toast.LENGTH_SHORT).show();
             finish();
             return;
@@ -56,7 +65,7 @@ public class FourAnimeAdapterActivity extends WebViewAdapterActivity<FourAnimeAd
      */
     private void initPayload() {
         try {
-            jsPayload = loadPayloadFromRaw(R.raw.fouranime_payload);
+            jsPayload = loadPayloadFromRaw(R.raw.animixplay_payload);
         } catch (IOException ignored) {
             jsPayload = "";
         }
@@ -80,7 +89,7 @@ public class FourAnimeAdapterActivity extends WebViewAdapterActivity<FourAnimeAd
             }
         } else {
             // directly to the episode page
-            return String.format(Locale.ENGLISH, "%s%s-episode-%02d", BASE_URL, persistentStorage, episode);
+            return String.format(Locale.ENGLISH, EP_URL_FMT, persistentStorage, episode);
         }
     }
 
@@ -98,17 +107,10 @@ public class FourAnimeAdapterActivity extends WebViewAdapterActivity<FourAnimeAd
         return jsPayload;
     }
 
-    /**
-     * add javascript interfaces to the webview.
-     * By default, {@link JSInterface} is added as 'App' (basic app calls)
-     * Additionally, {@link FourAnimeJS} is added as 'Tenshi'
-     *
-     * @param webView the webview to add the interfaces to
-     */
     @Override
     protected void addJavascriptInterfaces(@NonNull WebView webView) {
         super.addJavascriptInterfaces(webView);
-        webView.addJavascriptInterface(new FourAnimeJS(), "Tenshi");
+        webView.addJavascriptInterface(new AniMixPlayJS(), "Tenshi");
     }
 
     /**
@@ -118,15 +120,15 @@ public class FourAnimeAdapterActivity extends WebViewAdapterActivity<FourAnimeAd
      */
     @NonNull
     @Override
-    protected Class<FourAnimeAdapterService> getServiceClass() {
-        return FourAnimeAdapterService.class;
+    protected Class<AniMixPlayAdapterService> getServiceClass() {
+        return AniMixPlayAdapterService.class;
     }
 
     /**
      * javascript interface for payload- specific functions
      */
     @SuppressWarnings({"unused", "RedundantSuppression"})
-    private class FourAnimeJS {
+    private class AniMixPlayJS {
         /**
          * notify the application of the stream url.
          * this will ultimately close the webview and start playback in a external player
