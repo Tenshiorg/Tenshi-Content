@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/test_root_view"
     tools:context=".TestActivity"
     tools:ignore="HardcodedText">
 
@@ -12,24 +13,97 @@
         android:layout_margin="10dp"
         android:orientation="vertical">
 
+        <!-- adapter selection -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Adapter for Testing:"/>
+
+        <Spinner
+            android:id="@+id/adapter_select_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/spinner_generic_text"/>
+
+        <!-- details for this adapter -->
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Unique Name:" />
+
+            <TextView
+                android:id="@+id/meta_unique_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="[uniqueName]"
+                android:textIsSelectable="true" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Display Name:" />
+
+            <TextView
+                android:id="@+id/meta_display_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="[displayName]"
+                android:textIsSelectable="true" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="API Version:" />
+
+            <TextView
+                android:id="@+id/meta_api_ver"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="[apiVersion]"
+                android:textIsSelectable="true" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <!-- divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="?android:attr/listDivider" />
+
+
+        <!-- anime selection for testing -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Anime for Testing:" />
 
-        <!-- anime selection for testing -->
         <Spinner
             android:id="@+id/anime_select_spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:listitem="@layout/spinner_generic_text" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:text="Details:" />
 
         <!-- show details of this anime -->
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -45,7 +119,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="MAL_ID" />
+                android:text="MAL_ID\n4578" />
 
             <!-- en title -->
             <TextView
@@ -54,7 +128,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="TITLE_EN" />
+                android:text="TITLE_EN\nSome Title" />
 
             <!-- episode -->
             <TextView
@@ -63,7 +137,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="EPISODE" />
+                android:text="EPISODE\n2" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <!-- divider -->
@@ -74,13 +148,29 @@
             android:layout_marginBottom="10dp"
             android:background="?android:attr/listDivider" />
 
-        <!-- container for buttons -->
-        <LinearLayout
-            android:id="@+id/adapter_buttons_container"
+        <!-- query buttons -->
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:orientation="vertical" />
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/query_button_no_storage"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textAllCaps="false"
+                android:layout_marginEnd="5dp"
+                android:text="Query\n(no Storage)"/>
+
+            <Button
+                android:id="@+id/query_button_with_storage"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:textAllCaps="false"
+                android:text="Query\n(with Storage)"/>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
         <!-- divider -->
         <View
@@ -91,11 +181,15 @@
             android:background="?android:attr/listDivider" />
 
         <!-- query results -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Query Results:"/>
+
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="54dp">
+            android:layout_marginTop="16dp">
 
             <TextView
                 android:layout_width="0dp"
@@ -115,8 +209,7 @@
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="54dp">
+            android:layout_marginTop="16dp">
 
             <TextView
                 android:layout_width="0dp"

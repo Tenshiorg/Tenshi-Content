@@ -20,7 +20,7 @@ var mainEmbed = document.getElementById('main-embed');
 
 if (mainEmbed != null) {
     App.toast('Playback will start shortly...');
-    setTimeout(function () {
+    setInterval(function () {
         // run query selector inside the embed iframe
         var allVideos = mainEmbed.contentWindow.document.body.querySelectorAll('video');
         for (var i = 0; i < allVideos.length; i++) {
