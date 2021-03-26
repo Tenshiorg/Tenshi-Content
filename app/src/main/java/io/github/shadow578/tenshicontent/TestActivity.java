@@ -26,6 +26,7 @@ import io.github.shadow578.tenshi.content.aidl.IContentAdapter;
 import io.github.shadow578.tenshi.content.aidl.IContentAdapterCallback;
 import io.github.shadow578.tenshicontent.animixplay.AniMixPlayAdapterService;
 import io.github.shadow578.tenshicontent.fouranime.FourAnimeAdapterService;
+import io.github.shadow578.tenshicontent.yugenanime.YugenAnimeAdapterService;
 
 /**
  * a basic activity for testing content adapter services in- process.
@@ -37,7 +38,8 @@ public class TestActivity extends AppCompatActivity {
      */
     private final Class<?>[] testableServices = {
             FourAnimeAdapterService.class,
-            AniMixPlayAdapterService.class
+            AniMixPlayAdapterService.class,
+            YugenAnimeAdapterService.class
     };
 
     /**

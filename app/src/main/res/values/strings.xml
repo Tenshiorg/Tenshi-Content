@@ -6,4 +6,7 @@
 
     <!-- animixplay -->
     <string name="animixplay_display_name">AniMixPlay</string>
+
+    <!-- yugenani.me -->
+    <string name="yugenanime_display_name">YougenAnime</string>
 </resources>
