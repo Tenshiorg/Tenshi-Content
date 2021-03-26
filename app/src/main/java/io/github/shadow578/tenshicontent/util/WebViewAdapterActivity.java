@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
@@ -48,7 +49,6 @@ public abstract class WebViewAdapterActivity<T extends ActivityAdapterService<?>
      *
      * @return the initialized webview
      */
-    @SuppressLint("SetJavaScriptEnabled")
     protected WebView initWebView() {
         // create the client that will inject our js payload
         final WebViewClient webViewClient = new WebViewClient() {
@@ -61,7 +61,7 @@ public abstract class WebViewAdapterActivity<T extends ActivityAdapterService<?>
         // create and setup webview
         final WebView webView = new WebView(this);
         webView.setWebViewClient(webViewClient);
-        webView.getSettings().setJavaScriptEnabled(true);
+        configureWebView(webView, webView.getSettings());
 
         // add javascript interfaces
         addJavascriptInterfaces(webView);
@@ -78,6 +78,19 @@ public abstract class WebViewAdapterActivity<T extends ActivityAdapterService<?>
     protected void addJavascriptInterfaces(@NonNull WebView webView) {
         webView.addJavascriptInterface(new JSPayloadIf(), "JSPayloadIf");
         webView.addJavascriptInterface(new JSInterface(), "App");
+    }
+
+    /**
+     * configure the webview's settings.
+     * by default only enables js
+     * @param webView the webview to configure
+     * @param settings the webview's settings (same as webView.getSettings())
+     */
+    @SuppressLint("SetJavaScriptEnabled")
+    protected void configureWebView(@SuppressWarnings({"unused", "RedundantSuppression"}) @NonNull WebView webView, @NonNull WebSettings settings)
+    {
+        // required for javascript interfaces... and like 99% of all pages
+        settings.setJavaScriptEnabled(true);
     }
 
     /**
@@ -141,6 +154,7 @@ public abstract class WebViewAdapterActivity<T extends ActivityAdapterService<?>
     /**
      * javascript interface to access the payload
      */
+    @SuppressWarnings({"unused", "RedundantSuppression"})
     private class JSPayloadIf {
         /**
          * get the javascript payload for a given url.
