@@ -2,6 +2,7 @@ package io.github.shadow578.tenshicontent.animixplay;
 
 import android.os.Bundle;
 import android.webkit.JavascriptInterface;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Toast;
 
@@ -111,6 +112,12 @@ public class AniMixPlayAdapterActivity extends WebViewAdapterActivity<AniMixPlay
     protected void addJavascriptInterfaces(@NonNull WebView webView) {
         super.addJavascriptInterfaces(webView);
         webView.addJavascriptInterface(new AniMixPlayJS(), "Tenshi");
+    }
+
+    @Override
+    protected void configureWebView(@NonNull WebView webView, @NonNull WebSettings settings) {
+        super.configureWebView(webView, settings);
+        settings.setDomStorageEnabled(true);
     }
 
     /**

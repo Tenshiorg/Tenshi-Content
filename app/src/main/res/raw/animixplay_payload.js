@@ -1,7 +1,7 @@
 // Tenshi JS payload for animixplay.to
 // injected after every page load using default injector
 // -- constants --
-const SLUG_REGEX = /(?:animixplay.to\/v\d+\/)(.+)(?:\/ep2)/;
+const SLUG_REGEX = /(?:animixplay.to\/v\d+\/)([^\/]+)(?:\/ep\d+)?/;
 const VIDEO_POSTER = '';
 
 // -- update slug in persistent storage --
@@ -16,34 +16,47 @@ if (slugMatch != null) {
 }
 
 // -- setup all videos on the page for capturing --
-var allVideos = document.querySelectorAll('video');
-for (var i = 0; i < allVideos.length; i++) {
-    var video = allVideos[i];
-    App.log('setup for video with id: ' + video.id);
+// payload injected into the iframe
+function __payload_for_player_iframe() {
+    // notify that we are injected
+    //App.toast('injected stage 2!');
 
-    // disable autoplay on the video
-    video.autoplay = false;
+    // return video or backup (if main url is empty)
+    if (video !== '') {
+        return video;
+    }
 
-    // setup onplay event to capture the url
-    video.onplay = function () {
-        // stop the video and force show poster
-        video.pause();
-        video.setAttribute('poster', VIDEO_POSTER);
-        video.autoplay = false;
-        video.load();
+    // main video is empty, take the backup
+    Tenshi.log('main video is empty, taking backup');
+    return backup;
+}
 
-        // get the url from the video and notify tenshi
-        var vidUrl = video.currentSrc.toString();
-        if (vidUrl !== '') {
-            Tenshi.onStreamUrlFound(vidUrl);
+// inject into player's iframe
+var timerId = setInterval(() => {
+    // get player iframe
+    var playerIFrame = document.getElementById('iframeplayer')
+
+    // wait until it is loaded
+    // can't use onload here as it may already be loaded
+    if (playerIFrame && playerIFrame.contentDocument.readyState == 'complete') {
+        // notify user playback will start soon
+        App.toast('Playback will start shortly');
+
+        // ready, inject payload and execute
+        // the payload will return the url from the iframe context
+        playerIFrame.contentWindow.eval(__payload_for_player_iframe.toString());
+        var url = playerIFrame.contentWindow.__payload_for_player_iframe();
+
+        // check we have a url
+        if (url !== '') {
+            // stop the interval call
+            clearInterval(timerId);
+
+            // callback main app
+            Tenshi.onStreamUrlFound(url);
         }
-    };
-}
-
-// if we setup a video, notify the user they can start it now
-if (allVideos.length > 0) {
-    App.toast('Start the Video now.');
-}
+    }
+}, 100);
 
 // notify user we are successfully injected
-App.toast('Injected!');
+//App.toast('Injected stage 1!');
