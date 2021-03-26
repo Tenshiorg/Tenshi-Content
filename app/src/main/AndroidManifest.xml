@@ -89,5 +89,28 @@
         <activity
             android:name=".yugenanime.YugenAnimeAdapterActivity"
             android:label="@string/yugenanime_display_name" />
+
+        <!-- GenoAnime -->
+        <service
+            android:name=".genoanime.GenoAnimeAdapterService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="io.github.shadow578.tenshi.content.ADAPTER" />
+                <category android:name="io.github.shadow578.tenshi.content.ADAPTER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="io.github.shadow578.tenshi.content.DISPLAY_NAME"
+                android:value="@string/genoanime_display_name" />
+            <meta-data
+                android:name="io.github.shadow578.tenshi.content.ADAPTER_VERSION"
+                android:value="1" />
+            <meta-data
+                android:name="io.github.shadow578.tenshi.content.UNIQUE_NAME"
+                android:value="io.github.shadow578.tenshicontent.genoanime.webview" />
+        </service>
+        <activity
+            android:name=".genoanime.GenoAnimeAdapterActivity"
+            android:label="@string/genoanime_display_name" />
     </application>
 </manifest>

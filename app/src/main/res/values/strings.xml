@@ -9,4 +9,7 @@
 
     <!-- yugenani.me -->
     <string name="yugenanime_display_name">YougenAnime</string>
+
+    <!-- genoanime.com -->
+    <string name="genoanime_display_name">GenoAnime</string>
 </resources>

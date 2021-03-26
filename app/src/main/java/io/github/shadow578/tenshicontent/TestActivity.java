@@ -32,6 +32,7 @@ import io.github.shadow578.tenshi.content.aidl.IContentAdapter;
 import io.github.shadow578.tenshi.content.aidl.IContentAdapterCallback;
 import io.github.shadow578.tenshicontent.animixplay.AniMixPlayAdapterService;
 import io.github.shadow578.tenshicontent.fouranime.FourAnimeAdapterService;
+import io.github.shadow578.tenshicontent.genoanime.GenoAnimeAdapterService;
 import io.github.shadow578.tenshicontent.yugenanime.YugenAnimeAdapterService;
 
 /**
@@ -75,7 +76,8 @@ public class TestActivity extends AppCompatActivity {
     private final Class<?>[] testableServices = {
             FourAnimeAdapterService.class,
             AniMixPlayAdapterService.class,
-            YugenAnimeAdapterService.class
+            YugenAnimeAdapterService.class,
+            GenoAnimeAdapterService.class
     };
 
     /**
