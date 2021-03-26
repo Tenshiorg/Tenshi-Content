@@ -4,11 +4,13 @@ import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -37,7 +39,7 @@ import io.github.shadow578.tenshicontent.yugenanime.YugenAnimeAdapterService;
  * Bind- and calling logic is based on the one found in Tenshi
  */
 public class TestActivity extends AppCompatActivity {
-    //region Constants
+    //region tenshi.content Constants
     /**
      * metadata key for content adapter unique name String
      */
@@ -52,6 +54,19 @@ public class TestActivity extends AppCompatActivity {
      * metadata key for content adapter version int
      */
     public static final String META_ADAPTER_API_VERSION = "io.github.shadow578.tenshi.content.ADAPTER_VERSION";
+    //endregion
+
+    //region Prefs Constants
+
+    /**
+     * pref key for the last selected adapter
+     */
+    public final String KEY_LAST_ADAPTER_INDEX = "LastAdapterIndex";
+
+    /**
+     * pref key for the last selected anime
+     */
+    public final String KEY_LAST_ANIME_INDEX = "LastAnimeIndex";
     //endregion
 
     /**
@@ -75,6 +90,7 @@ public class TestActivity extends AppCompatActivity {
     /**
      * the currently selected adapter class
      */
+    @NonNull
     private Class<?> selectedAdapter = testableServices[0];
 
     /**
@@ -83,10 +99,18 @@ public class TestActivity extends AppCompatActivity {
     @NonNull
     private Anime selectedAnime = testableAnime[0];
 
+    /**
+     * shared preferences of the app
+     */
+    private SharedPreferences prefs;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
+
+        // initialize preferences
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         // setup anime selection spinner
         populateAnimeSelection();
@@ -120,6 +144,9 @@ public class TestActivity extends AppCompatActivity {
                 selectedAnime = testableAnime[position];
                 updateSelectedAnimeDisplayViews();
                 resetQueryResultViews();
+
+                // save selection in prefs
+                prefs.edit().putInt(KEY_LAST_ANIME_INDEX, position).apply();
             }
 
             @Override
@@ -127,6 +154,10 @@ public class TestActivity extends AppCompatActivity {
 
             }
         });
+
+        // load index from prefs
+        int selIndex = prefs.getInt(KEY_LAST_ANIME_INDEX, 0);
+        animeSelect.setSelection(selIndex >= testableAnime.length ? 0 : selIndex);
     }
 
     /**
@@ -162,6 +193,9 @@ public class TestActivity extends AppCompatActivity {
                 selectedAdapter = testableServices[position];
                 updateAdapterMetaViews();
                 resetQueryResultViews();
+
+                // save selection in prefs
+                prefs.edit().putInt(KEY_LAST_ADAPTER_INDEX, position).apply();
             }
 
             @Override
@@ -169,6 +203,10 @@ public class TestActivity extends AppCompatActivity {
 
             }
         });
+
+        // load index from prefs
+        int selIndex = prefs.getInt(KEY_LAST_ADAPTER_INDEX, 0);
+        adapterSelect.setSelection(selIndex >= testableServices.length ? 0 : selIndex);
     }
 
     /**
@@ -216,7 +254,7 @@ public class TestActivity extends AppCompatActivity {
                 Snackbar.make(findViewById(R.id.test_root_view), "Some metadata is missing! consider adding it.", Snackbar.LENGTH_SHORT).show();
 
             // show a snackbar if the service is not exported (not accessible by Tenshi)
-            if(!svcInfo.exported)
+            if (!svcInfo.exported)
                 Snackbar.make(findViewById(R.id.test_root_view), "Your Adapter is not exported. Tenshi wont be able to access it", Snackbar.LENGTH_SHORT).show();
         } catch (PackageManager.NameNotFoundException e) {
             Toast.makeText(this, "NameNotFound: " + svcComponent.flattenToString(), Toast.LENGTH_SHORT).show();
