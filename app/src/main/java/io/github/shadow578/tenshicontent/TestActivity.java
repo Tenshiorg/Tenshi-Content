@@ -28,8 +28,8 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 
-import io.github.shadow578.tenshi.content.aidl.IContentAdapter;
-import io.github.shadow578.tenshi.content.aidl.IContentAdapterCallback;
+import io.github.shadow578.tenshi.extensionslib.content.IContentAdapter;
+import io.github.shadow578.tenshi.extensionslib.content.IContentCallback;
 import io.github.shadow578.tenshicontent.animixplay.AniMixPlayAdapterService;
 import io.github.shadow578.tenshicontent.fouranime.FourAnimeAdapterService;
 import io.github.shadow578.tenshicontent.genoanime.GenoAnimeAdapterService;
@@ -38,6 +38,8 @@ import io.github.shadow578.tenshicontent.yugenanime.YugenAnimeAdapterService;
 /**
  * a basic activity for testing content adapter services in- process.
  * Bind- and calling logic is based on the one found in Tenshi
+ *
+ * TODO: port to lib
  */
 public class TestActivity extends AppCompatActivity {
     //region tenshi.content Constants
@@ -371,7 +373,7 @@ public class TestActivity extends AppCompatActivity {
         new Thread(() -> {
             try {
                 // request uri from the adapter
-                ca.requestStreamUri(selectedAnime.malID, selectedAnime.enTitle, "", selectedAnime.episode, persistentStorage, new IContentAdapterCallback.Stub() {
+                ca.requestStreamUri(selectedAnime.malID, selectedAnime.enTitle, "", selectedAnime.episode, persistentStorage, new IContentCallback.Stub() {
                     @Override
                     public void streamUriResult(String streamUri, String persistentStorage) {
                         mh.post(() -> {

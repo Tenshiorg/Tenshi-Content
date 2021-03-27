@@ -2,7 +2,7 @@ package io.github.shadow578.tenshicontent.yugenanime;
 
 import androidx.annotation.NonNull;
 
-import io.github.shadow578.tenshicontent.util.activityadapter.ActivityAdapterService;
+import io.github.shadow578.tenshi.extensionslib.content.util.ActivityAdapterService;
 
 /**
  * ActivityAdapter service for {@link YugenAnimeAdapterActivity}

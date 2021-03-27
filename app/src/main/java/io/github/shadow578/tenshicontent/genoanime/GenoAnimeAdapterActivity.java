@@ -13,8 +13,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Locale;
 
+import io.github.shadow578.tenshi.extensionslib.content.util.WebViewAdapterActivity;
 import io.github.shadow578.tenshicontent.R;
-import io.github.shadow578.tenshicontent.util.WebViewAdapterActivity;
 
 /**
  * ActivityAdapter activity for {@link GenoAnimeAdapterService}.
@@ -22,7 +22,7 @@ import io.github.shadow578.tenshicontent.util.WebViewAdapterActivity;
  */
 public class GenoAnimeAdapterActivity extends WebViewAdapterActivity<GenoAnimeAdapterService> {
 
-//region URL Constants
+    //region URL Constants
     /**
      * genoanime.com base url
      */
@@ -38,7 +38,7 @@ public class GenoAnimeAdapterActivity extends WebViewAdapterActivity<GenoAnimeAd
 
     /**
      * episode url for geno
-     *
+     * <p>
      * Format: anime name, episode no
      */
     @SuppressWarnings("FieldCanBeLocal")
@@ -52,7 +52,7 @@ public class GenoAnimeAdapterActivity extends WebViewAdapterActivity<GenoAnimeAd
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        if(!loadAdapterParams()){
+        if (!loadAdapterParams()) {
             Toast.makeText(this, "failed to load params!", Toast.LENGTH_SHORT).show();
             finish();
             return;
@@ -170,7 +170,7 @@ public class GenoAnimeAdapterActivity extends WebViewAdapterActivity<GenoAnimeAd
          * @return should we directly start playback?
          */
         @JavascriptInterface
-        public boolean shouldDirectlyStartPlayback(){
+        public boolean shouldDirectlyStartPlayback() {
             return false;//TODO configurable, also use this for other adapters?
         }
     }

@@ -13,8 +13,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Locale;
 
+import io.github.shadow578.tenshi.extensionslib.content.util.WebViewAdapterActivity;
 import io.github.shadow578.tenshicontent.R;
-import io.github.shadow578.tenshicontent.util.WebViewAdapterActivity;
 
 /**
  * ActivityAdapter activity for {@link FourAnimeAdapterService}.
@@ -41,7 +41,7 @@ public class FourAnimeAdapterActivity extends WebViewAdapterActivity<FourAnimeAd
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        if(!loadAdapterParams()){
+        if (!loadAdapterParams()) {
             Toast.makeText(this, "failed to load params!", Toast.LENGTH_SHORT).show();
             finish();
             return;
