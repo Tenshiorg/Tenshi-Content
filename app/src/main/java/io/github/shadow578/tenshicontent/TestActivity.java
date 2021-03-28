@@ -1,17 +1,9 @@
 package io.github.shadow578.tenshicontent;
 
 import android.annotation.SuppressLint;
-import android.content.ComponentName;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.content.pm.ServiceInfo;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.IBinder;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -24,41 +16,19 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.material.snackbar.Snackbar;
-
 import java.util.ArrayList;
+import java.util.List;
 
-import io.github.shadow578.tenshi.extensionslib.content.IContentAdapter;
-import io.github.shadow578.tenshi.extensionslib.content.IContentCallback;
-import io.github.shadow578.tenshicontent.animixplay.AniMixPlayAdapterService;
-import io.github.shadow578.tenshicontent.fouranime.FourAnimeAdapterService;
-import io.github.shadow578.tenshicontent.genoanime.GenoAnimeAdapterService;
-import io.github.shadow578.tenshicontent.yugenanime.YugenAnimeAdapterService;
+import io.github.shadow578.tenshi.extensionslib.content.ContentAdapterManager;
+import io.github.shadow578.tenshi.extensionslib.content.ContentAdapterWrapper;
+
+import static io.github.shadow578.tenshi.extensionslib.lang.LanguageUtil.str;
 
 /**
  * a basic activity for testing content adapter services in- process.
  * Bind- and calling logic is based on the one found in Tenshi
- *
- * TODO: port to lib
  */
 public class TestActivity extends AppCompatActivity {
-    //region tenshi.content Constants
-    /**
-     * metadata key for content adapter unique name String
-     */
-    public static final String META_UNIQUE_NAME = "io.github.shadow578.tenshi.content.UNIQUE_NAME";
-
-    /**
-     * metadata key for content adapter display name string
-     */
-    public static final String META_DISPLAY_NAME = "io.github.shadow578.tenshi.content.DISPLAY_NAME";
-
-    /**
-     * metadata key for content adapter version int
-     */
-    public static final String META_ADAPTER_API_VERSION = "io.github.shadow578.tenshi.content.ADAPTER_VERSION";
-    //endregion
-
     //region Prefs Constants
 
     /**
@@ -73,16 +43,6 @@ public class TestActivity extends AppCompatActivity {
     //endregion
 
     /**
-     * a list of all service classes that are testable content adapters
-     */
-    private final Class<?>[] testableServices = {
-            FourAnimeAdapterService.class,
-            AniMixPlayAdapterService.class,
-            YugenAnimeAdapterService.class,
-            GenoAnimeAdapterService.class
-    };
-
-    /**
      * a list of anime options for testing
      */
     private final Anime[] testableAnime = {
@@ -92,10 +52,15 @@ public class TestActivity extends AppCompatActivity {
     };
 
     /**
-     * the currently selected adapter class
+     * content adapter manager
+     */
+    private ContentAdapterManager contentAdapterManager;
+
+    /**
+     * the currently selected adapter unique name
      */
     @NonNull
-    private Class<?> selectedAdapter = testableServices[0];
+    private String selectedAdapter = "";
 
     /**
      * the currently selected anime
@@ -107,6 +72,11 @@ public class TestActivity extends AppCompatActivity {
      * shared preferences of the app
      */
     private SharedPreferences prefs;
+
+    /**
+     * current persistent storage value
+     */
+    private String persistentStorageValue = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,13 +90,37 @@ public class TestActivity extends AppCompatActivity {
         populateAnimeSelection();
         updateSelectedAnimeDisplayViews();
 
-        // setup spinner for adaper selection
-        populateAdapterSelection();
-        updateAdapterMetaViews();
+        // init content adapter manager
+        contentAdapterManager = new ContentAdapterManager(this, new ContentAdapterManager.IPersistentStorageProvider() {
+            @NonNull
+            @Override
+            public String getPersistentStorage(@NonNull String uniqueName, int animeId) {
+                return persistentStorageValue;
+            }
 
-        // other stuff...
-        resetQueryResultViews();
-        updateQueryButtons(null);
+            @Override
+            public void setPersistentStorage(@NonNull String uniqueName, int animeId, @NonNull String persistentStorage) {
+                persistentStorageValue = persistentStorage;
+                updateQueryButtons(persistentStorage);
+            }
+        });
+        contentAdapterManager.discoverAndInit(false);
+        contentAdapterManager.addOnDiscoveryEndCallback(p -> {
+            // abort if no adapters found
+            if(p.getAdapterCount() <= 0)
+            {
+                Toast.makeText(this, "No adapters loaded!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // setup spinner for adapter selection
+            populateAdapterSelection();
+            updateAdapterMetaViews();
+
+            // other stuff...
+            resetQueryResultViews();
+            updateQueryButtons(null);
+        });
     }
 
     /**
@@ -183,9 +177,11 @@ public class TestActivity extends AppCompatActivity {
      */
     private void populateAdapterSelection() {
         // get a list of all testable adapter names
+        final List<ContentAdapterWrapper> cas = contentAdapterManager.getAdapters();
         final ArrayList<String> adapterNames = new ArrayList<>();
-        for (Class<?> a : testableServices)
-            adapterNames.add(a.getSimpleName());
+        for (ContentAdapterWrapper a : cas) {
+            adapterNames.add(a.getDisplayName());
+        }
 
         // setup the spinner
         final Spinner adapterSelect = findViewById(R.id.adapter_select_spinner);
@@ -194,7 +190,7 @@ public class TestActivity extends AppCompatActivity {
         adapterSelect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedAdapter = testableServices[position];
+                selectedAdapter = cas.get(position).getUniqueName();
                 updateAdapterMetaViews();
                 resetQueryResultViews();
 
@@ -210,60 +206,18 @@ public class TestActivity extends AppCompatActivity {
 
         // load index from prefs
         int selIndex = prefs.getInt(KEY_LAST_ADAPTER_INDEX, 0);
-        adapterSelect.setSelection(selIndex >= testableServices.length ? 0 : selIndex);
+        adapterSelect.setSelection(selIndex >= cas.size() ? 0 : selIndex);
     }
 
     /**
      * update the adapter metadata views
      */
     private void updateAdapterMetaViews() {
-        // get name of the service
-        final ComponentName svcComponent = new ComponentName(this, selectedAdapter);
+        // get adapter
+        final ContentAdapterWrapper ca = contentAdapterManager.getAdapterOrDefault(selectedAdapter);
 
-        try {
-            // query service with metadata
-            final ServiceInfo svcInfo = getPackageManager().getServiceInfo(svcComponent, PackageManager.GET_META_DATA);
-
-            // get metadata
-            final Bundle meta = svcInfo.metaData;
-            String uniqueName = meta.getString(META_UNIQUE_NAME, null);
-            String displayName = meta.getString(META_DISPLAY_NAME, null);
-            int apiVersion = meta.getInt(META_ADAPTER_API_VERSION, -1);
-
-            // check if metadata is ok
-            boolean metadataMissing = false;
-            if (uniqueName == null || uniqueName.trim().isEmpty()) {
-                metadataMissing = true;
-                uniqueName = "MISSING";
-            }
-
-            if (displayName == null || displayName.trim().isEmpty()) {
-                metadataMissing = true;
-                displayName = "MISSING";
-            }
-
-            String apiVersionStr;
-            if (apiVersion <= 0) {
-                metadataMissing = true;
-                apiVersionStr = "MISSING";
-            } else {
-                apiVersionStr = String.valueOf(apiVersion);
-            }
-
-            // update views
-            setMetadataViews(uniqueName, displayName, apiVersionStr);
-
-            // show a snackbar if metadata is missing
-            if (metadataMissing)
-                Snackbar.make(findViewById(R.id.test_root_view), "Some metadata is missing! consider adding it.", Snackbar.LENGTH_SHORT).show();
-
-            // show a snackbar if the service is not exported (not accessible by Tenshi)
-            if (!svcInfo.exported)
-                Snackbar.make(findViewById(R.id.test_root_view), "Your Adapter is not exported. Tenshi wont be able to access it", Snackbar.LENGTH_SHORT).show();
-        } catch (PackageManager.NameNotFoundException e) {
-            Toast.makeText(this, "NameNotFound: " + svcComponent.flattenToString(), Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-        }
+        // update views
+        setMetadataViews(ca.getUniqueName(), ca.getDisplayName(), str(ca.getApiVersion()));
     }
 
     /**
@@ -318,85 +272,37 @@ public class TestActivity extends AppCompatActivity {
         final boolean hasPersistentStorage = persStorage != null && !persStorage.trim().isEmpty();
 
         // set onclick without storage
-        queryNoStorage.setOnClickListener(v -> testContentService(selectedAdapter, ""));
+        queryNoStorage.setOnClickListener(v -> {
+            persistentStorageValue = "";
+            testCurrentContentAdapter();
+        });
 
         // set onclick with storage if we have storage
         // else disable the button
         if (hasPersistentStorage) {
-            queryWithStorage.setOnClickListener(v -> testContentService(selectedAdapter, persStorage));
+            queryWithStorage.setOnClickListener(v -> testCurrentContentAdapter());
             queryWithStorage.setEnabled(true);
         } else
             queryWithStorage.setEnabled(false);
     }
 
     /**
-     * test a content adapter service, and show the result in the ui
-     *
-     * @param svcClass          the service to bind and test
-     * @param persistentStorage persistent storage to use in the cal to requestStreamUri
+     * test the current content adapter
      */
-    private void testContentService(@NonNull Class<?> svcClass, @NonNull String persistentStorage) {
+    private void testCurrentContentAdapter() {
         // clear result views
         resetQueryResultViews();
 
-        // bind the service
-        final Intent svcIntent = new Intent(this, svcClass);
-        bindService(svcIntent, new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                Toast.makeText(TestActivity.this, name.getClassName() + " connected, start query", Toast.LENGTH_SHORT).show();
+        // get wrapper and bind
+        final ContentAdapterWrapper ca = contentAdapterManager.getAdapter(selectedAdapter);
+        ca.bind(this);
+        ca.requestStreamUri(selectedAnime.malID, selectedAnime.enTitle, "", selectedAnime.episode, url -> {
+            // show results
+            setQueryResultViews(url, persistentStorageValue);
 
-                // get service as IContentAdapter and test
-                final IContentAdapter ca = IContentAdapter.Stub.asInterface(service);
-                testContentAdapter(ca, svcIntent, persistentStorage);
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-                Toast.makeText(TestActivity.this, name.getClassName() + " disconnected", Toast.LENGTH_SHORT).show();
-            }
-        }, BIND_AUTO_CREATE);
-    }
-
-    /**
-     * test a content adapter and update the results in the ui
-     *
-     * @param ca                the adapter to test
-     * @param svcIntent         the service connection intent, to close after a result is received
-     * @param persistentStorage persistent storage to use in the cal to requestStreamUri
-     */
-    private void testContentAdapter(@NonNull IContentAdapter ca, @NonNull Intent svcIntent, @NonNull String persistentStorage) {
-        // get handler on main thread
-        final Handler mh = new Handler(getMainLooper());
-
-        // run in a background thread
-        new Thread(() -> {
-            try {
-                // request uri from the adapter
-                ca.requestStreamUri(selectedAnime.malID, selectedAnime.enTitle, "", selectedAnime.episode, persistentStorage, new IContentCallback.Stub() {
-                    @Override
-                    public void streamUriResult(String streamUri, String persistentStorage) {
-                        mh.post(() -> {
-                            // show results
-                            setQueryResultViews(streamUri, persistentStorage);
-
-                            // update buttons
-                            updateQueryButtons(persistentStorage);
-
-                            // disconnect service
-                            stopService(svcIntent);
-                        });
-                    }
-                });
-
-            } catch (Exception e) {
-                Log.e("TenshiCP", "Exception in content adapter call:");
-                e.printStackTrace();
-
-                // show a toast
-                mh.post(() -> Toast.makeText(TestActivity.this, e.toString() + " in CA call", Toast.LENGTH_SHORT).show());
-            }
-        }).start();
+            // unbind
+            ca.unbind(this);
+        });
     }
 
     /**

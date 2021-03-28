@@ -20,9 +20,9 @@
             </intent-filter>
         </activity>
 
-        <!-- 4anime -->
+        <!-- Web Adapter -->
         <service
-            android:name=".fouranime.FourAnimeAdapterService"
+            android:name=".webadapter.WebAdapterService"
             android:exported="true">
             <intent-filter>
                 <action android:name="io.github.shadow578.tenshi.content.ADAPTER" />
@@ -30,87 +30,11 @@
             </intent-filter>
 
             <meta-data
-                android:name="io.github.shadow578.tenshi.content.DISPLAY_NAME"
-                android:value="@string/fouranime_display_name" />
-            <meta-data
                 android:name="io.github.shadow578.tenshi.content.ADAPTER_VERSION"
-                android:value="1" />
-            <meta-data
-                android:name="io.github.shadow578.tenshi.content.UNIQUE_NAME"
-                android:value="io.github.shadow578.tenshicontent.fouranime.webview" />
+                android:value="2" />
         </service>
         <activity
-            android:name=".fouranime.FourAnimeAdapterActivity"
-            android:label="@string/fouranime_display_name" />
-
-        <!-- animixplay -->
-        <service
-            android:name=".animixplay.AniMixPlayAdapterService"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="io.github.shadow578.tenshi.content.ADAPTER" />
-                <category android:name="io.github.shadow578.tenshi.content.ADAPTER" />
-            </intent-filter>
-
-            <meta-data
-                android:name="io.github.shadow578.tenshi.content.DISPLAY_NAME"
-                android:value="@string/animixplay_display_name" />
-            <meta-data
-                android:name="io.github.shadow578.tenshi.content.ADAPTER_VERSION"
-                android:value="1" />
-            <meta-data
-                android:name="io.github.shadow578.tenshi.content.UNIQUE_NAME"
-                android:value="io.github.shadow578.tenshicontent.animixplay.webview" />
-        </service>
-        <activity
-            android:name=".animixplay.AniMixPlayAdapterActivity"
-            android:label="@string/animixplay_display_name" />
-
-
-        <!-- YugenAnime -->
-        <service
-            android:name=".yugenanime.YugenAnimeAdapterService"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="io.github.shadow578.tenshi.content.ADAPTER" />
-                <category android:name="io.github.shadow578.tenshi.content.ADAPTER" />
-            </intent-filter>
-
-            <meta-data
-                android:name="io.github.shadow578.tenshi.content.DISPLAY_NAME"
-                android:value="@string/yugenanime_display_name" />
-            <meta-data
-                android:name="io.github.shadow578.tenshi.content.ADAPTER_VERSION"
-                android:value="1" />
-            <meta-data
-                android:name="io.github.shadow578.tenshi.content.UNIQUE_NAME"
-                android:value="io.github.shadow578.tenshicontent.yugenanime.webview" />
-        </service>
-        <activity
-            android:name=".yugenanime.YugenAnimeAdapterActivity"
-            android:label="@string/yugenanime_display_name" />
-
-        <!-- GenoAnime -->
-        <service
-            android:name=".genoanime.GenoAnimeAdapterService"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="io.github.shadow578.tenshi.content.ADAPTER" />
-                <category android:name="io.github.shadow578.tenshi.content.ADAPTER" />
-            </intent-filter>
-
-            <meta-data
-                android:name="io.github.shadow578.tenshi.content.DISPLAY_NAME"
-                android:value="@string/genoanime_display_name" />
-            <meta-data
-                android:name="io.github.shadow578.tenshi.content.ADAPTER_VERSION"
-                android:value="1" />
-            <meta-data
-                android:name="io.github.shadow578.tenshi.content.UNIQUE_NAME"
-                android:value="io.github.shadow578.tenshicontent.genoanime.webview" />
-        </service>
-        <activity
-            android:name=".genoanime.GenoAnimeAdapterActivity"
-            android:label="@string/genoanime_display_name" />
+            android:name=".webadapter.WebAdapterActivity"
+            android:label="@string/webadapter_title" />
     </application>
 </manifest>

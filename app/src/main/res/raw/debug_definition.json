@@ -1,0 +1,13 @@
+[
+  {
+    "name": "debug_adapter",
+    "displayName": "Debug Adapter",
+    "storagePattern": null,
+    "searchUrl": "https://4anime.to/?s=%s",
+    "episodeUrl": "https://4anime.to/%s-episode-%d",
+    "payload": "local",
+    "userAgentOverride": null,
+    "domStorageEnabled": null,
+    "allowContentAccess": null
+  }
+]
