@@ -17,7 +17,7 @@ public final class Constants {
      * url to load web definitions from
      */
     @SuppressWarnings("FieldCanBeLocal")
-    public static final String DEFINITIONS_URL = "";
+    public static final String DEFINITIONS_URL = "https://raw.githubusercontent.com/Tenshiorg/Tenshi-Content/kohai/webadapters/adapter-definitions.json";
 
     /**
      * prefix for web adapter unique names
@@ -28,7 +28,7 @@ public final class Constants {
     /**
      * payload function call, executed after inject
      */
-    public static final String PAYLOAD_INIT_FUNCTION_CALL = "__tenshi_payload_init();";
+    public static final String PAYLOAD_INIT_FUNCTION_CALL = "__tenshi_payload_init()";
 
     /**
      * should we load definition and payload from R.raw?

@@ -1,11 +1,11 @@
 [
   {
-    "name": "debug_adapter",
-    "displayName": "Debug Adapter",
+    "name": "fouranime.web",
+    "displayName": "4Anime",
     "storagePattern": null,
     "searchUrl": "https://4anime.to/?s=%s",
-    "episodeUrl": "https://4anime.to/%s-episode-%d",
-    "payload": "local",
+    "episodeUrl": "https://4anime.to/%s-episode-%02d",
+    "payload": "https://raw.githubusercontent.com/Tenshiorg/Tenshi-Content/kohai/webadapters/payloads/4anime.js",
     "userAgentOverride": null,
     "domStorageEnabled": null,
     "allowContentAccess": null
