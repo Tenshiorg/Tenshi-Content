@@ -48,7 +48,7 @@ public class WebAdapterDefinitionsHelper {
      *
      * @return the list of web adapter definitions, or null if not loaded / loading failed / ...
      */
-    @Nullable
+    @NonNull
     public static List<WebAdapterDefinition> getAdapterDefinitions() {
         try {
             synchronized (DEFINITIONS_LOCK) {
@@ -59,7 +59,7 @@ public class WebAdapterDefinitionsHelper {
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
-            return null;
+            return new ArrayList<>();
         }
     }
 
