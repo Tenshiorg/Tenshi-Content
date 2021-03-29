@@ -5,7 +5,7 @@
         "storagePattern": null,
         "searchUrl": "https://4anime.to/?s=%s",
         "episodeUrl": "https://4anime.to/%s-episode-%02d",
-        "payload": "https://raw.githubusercontent.com/Tenshiorg/Tenshi-Content/kohai/webadapters/payloads/4anime.js",
+        "payload": "webadapters/payloads/4anime.js",
         "userAgentOverride": null,
         "domStorageEnabled": null,
         "allowContentAccess": null
@@ -16,7 +16,7 @@
         "storagePattern": null,
         "searchUrl": "https://yugenani.me/search/?q=%s",
         "episodeUrl": "https://yugenani.me/watch/%s/%d/",
-        "payload": "https://raw.githubusercontent.com/Tenshiorg/Tenshi-Content/kohai/webadapters/payloads/yugenanime.js",
+        "payload": "webadapters/payloads/yugenanime.js",
         "userAgentOverride": null,
         "domStorageEnabled": true,
         "allowContentAccess": null
@@ -27,7 +27,7 @@
         "storagePattern": null,
         "searchUrl": "https://animixplay.to/?q=%s",
         "episodeUrl": "https://animixplay.to/v1/%s/ep%d",
-        "payload": "https://raw.githubusercontent.com/Tenshiorg/Tenshi-Content/kohai/webadapters/payloads/animixplay.js",
+        "payload": "webadapters/payloads/animixplay.js",
         "userAgentOverride": null,
         "domStorageEnabled": true,
         "allowContentAccess": null
@@ -38,7 +38,7 @@
         "storagePattern": null,
         "searchUrl": "https://genoanime.com/search?xquery=%s",
         "episodeUrl": "https://genoanime.com/watch?name=%s&episode=%d",
-        "payload": "https://raw.githubusercontent.com/Tenshiorg/Tenshi-Content/kohai/webadapters/payloads/genoanime.js",
+        "payload": "webadapters/payloads/genoanime.js",
         "userAgentOverride": null,
         "domStorageEnabled": null,
         "allowContentAccess": null

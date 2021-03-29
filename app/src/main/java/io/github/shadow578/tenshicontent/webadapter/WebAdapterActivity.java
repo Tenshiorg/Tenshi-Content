@@ -167,7 +167,8 @@ public class WebAdapterActivity extends WebViewAdapterActivity<WebAdapterService
     protected String getJSLoader() {
         if (!Constants.isDebugMode()) {
             // loader for production builds (webloader)
-            return "fetch('" + definition.payload + "').then(function(response) { response.text().then(function(text) { var script = document.createElement('script'); script.type = 'text/javascript'; script.appendChild(document.createTextNode(text)); document.body.append(script); " + Constants.PAYLOAD_INIT_FUNCTION_CALL + "; }) });";
+            final String payloadUrl = Constants.PAYLOAD_BASE_URL + definition.payload;
+            return "fetch('" + payloadUrl + "').then(function(response) { response.text().then(function(text) { var script = document.createElement('script'); script.type = 'text/javascript'; script.appendChild(document.createTextNode(text)); document.body.append(script); " + Constants.PAYLOAD_INIT_FUNCTION_CALL + "; }) });";
         } else {
             // loader that loads from raw using getJsPayload()
             return "var script = document.createElement('script'); script.type = 'text/javascript'; script.appendChild(document.createTextNode(JSPayloadIf.getPayloadJs(document.location.href))); document.body.append(script); " + Constants.PAYLOAD_INIT_FUNCTION_CALL + ";";

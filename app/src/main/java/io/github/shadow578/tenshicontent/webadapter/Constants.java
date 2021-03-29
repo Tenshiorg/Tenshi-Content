@@ -11,13 +11,19 @@ public final class Constants {
      * in debug mode, definition json and script payload are loaded from R.raw.
      * This is ignored when not a debug build
      */
-    public static final boolean DEBUG_MODE = true;
+    public static final boolean DEBUG_MODE = false;
+
+    /**
+     * base url for web adapter payloads
+     */
+    @SuppressWarnings("FieldCanBeLocal")
+    public static final String PAYLOAD_BASE_URL = "https://raw.githubusercontent.com/Tenshiorg/Tenshi-Content/kohai/";
 
     /**
      * url to load web definitions from
      */
     @SuppressWarnings("FieldCanBeLocal")
-    public static final String DEFINITIONS_URL = "https://raw.githubusercontent.com/Tenshiorg/Tenshi-Content/kohai/webadapters/adapter-definitions.json";
+    public static final String DEFINITIONS_URL = PAYLOAD_BASE_URL + "webadapters/adapter-definitions.json";
 
     /**
      * prefix for web adapter unique names
