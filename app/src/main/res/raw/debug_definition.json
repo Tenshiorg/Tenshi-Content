@@ -1,0 +1,13 @@
+[
+  {
+    "name": "genoanime.web",
+    "displayName": "GenoAnime",
+    "storagePattern": null,
+    "searchUrl": "https://genoanime.com/search?xquery=%s",
+    "episodeUrl": "https://genoanime.com/watch?name=%s&episode=%d",
+    "payload": "https://raw.githubusercontent.com/Tenshiorg/Tenshi-Content/kohai/webadapters/payloads/genoanime.js",
+    "userAgentOverride": null,
+    "domStorageEnabled": null,
+    "allowContentAccess": null
+  }
+]
