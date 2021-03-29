@@ -17,7 +17,7 @@ public final class Constants {
      * base url for web adapter payloads
      */
     @SuppressWarnings("FieldCanBeLocal")
-    public static final String PAYLOAD_BASE_URL = "https://raw.githubusercontent.com/Tenshiorg/Tenshi-Content/kohai/";
+    public static final String PAYLOAD_BASE_URL = "https://raw.githubusercontent.com/Tenshiorg/Tenshi-Content/senpai/";
 
     /**
      * url to load web definitions from
